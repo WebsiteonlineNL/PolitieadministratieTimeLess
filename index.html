@@ -6,76 +6,56 @@
 <title>Politiekorps Timeless - Timeless Roleplay</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
 <style>
-:root{--bg:#eef1f6;--surface:#fff;--ink:#14213d;--muted:#5b6785;--line:#d5dbe8;--blue:#2447a8;--blue-ink:#fff;--head:#14213d;--head-ink:#fff;--danger:#b3261e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1424;--surface:#161e33;--ink:#e8ecf7;--muted:#97a3c2;--line:#2a3558;--blue:#6e93ff;--blue-ink:#0e1424;--head:#0a0f1d;--head-ink:#e8ecf7;--danger:#ff8a80}}
-:root[data-theme="dark"]{--bg:#0e1424;--surface:#161e33;--ink:#e8ecf7;--muted:#97a3c2;--line:#2a3558;--blue:#6e93ff;--blue-ink:#0e1424;--head:#0a0f1d;--head-ink:#e8ecf7;--danger:#ff8a80}
-*{box-sizing:border-box}
+:root{--bg:#eef2f9;--surface:#fff;--ink:#12203f;--muted:#5d6b8a;--line:#dbe2f0;--blue:#2447a8;--blue2:#3b6df0;--gold:#f2b705;--danger:#c0352b;--warn-bg:#fdf0d2;--warn-ink:#7a4d00;--ok-bg:#dff3e4;--ok-ink:#17602e;--sh:0 1px 2px rgba(18,32,63,.06),0 8px 24px rgba(18,32,63,.08);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1020;--surface:#151d34;--ink:#e8ecf7;--muted:#97a3c2;--line:#28345a;--blue:#4f7bff;--blue2:#6e93ff;--danger:#ff8a80;--warn-bg:#3a2f12;--warn-ink:#f3c768;--ok-bg:#12331e;--ok-ink:#7fd99a;--sh:0 8px 24px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Barlow,system-ui,sans-serif}
-header{background:var(--head);color:var(--head-ink);padding:28px 20px 22px;border-bottom:4px solid var(--blue)}
-.wrap{max-width:1000px;margin:0 auto}
-h1{font:700 34px/1.1 "Barlow Condensed",Impact,sans-serif;margin:0;letter-spacing:.5px}
-header p{margin:6px 0 0;opacity:.8}
-.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-.stat{border:1px solid rgba(255,255,255,.25);padding:6px 12px;border-radius:4px}
-.stat b{font:700 22px "Barlow Condensed",sans-serif;margin-right:6px}
-main{max-width:1000px;margin:0 auto;padding:18px 20px 60px}
-.bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:8px 10px;min-width:0}
-.bar input{flex:1 1 200px}
-button{font:600 15px Barlow,sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:4px;cursor:pointer}
-button.primary{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}
-button.danger{color:var(--danger)}
-:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
-section.grp{margin-bottom:22px}
-.grp h2{font:700 22px "Barlow Condensed",sans-serif;margin:0 0 8px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
-.tag{font:600 12px Barlow,sans-serif;background:var(--blue);color:var(--blue-ink);padding:2px 8px;border-radius:3px}
-.count{color:var(--muted);font:500 14px Barlow,sans-serif}
-.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:4px}
-table{border-collapse:collapse;width:100%;min-width:640px}
-th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-weight:600;color:var(--muted);font-size:13px}
-tr:last-child td{border-bottom:0}
-.st{font-size:13px;color:var(--muted)}
-.empty{padding:36px 16px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:4px}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}.tabs button.on{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}.me{margin-top:10px;font-size:14px;opacity:.85}.big{font:700 40px "Barlow Condensed",sans-serif}.card{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:16px;margin-bottom:14px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.in{width:90px}.on{color:var(--blue);font-weight:600}.chk{display:inline-flex;gap:5px;align-items:center;margin:0 12px 6px 0;font-size:14px;color:var(--ink)}.chk input{width:auto;margin:0}.note{font-size:13px;color:var(--muted);margin-top:18px}
-dialog{border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);padding:20px;width:min(480px,94vw)}
-dialog::backdrop{background:rgba(5,10,25,.55)}
-dialog h3{font:700 24px "Barlow Condensed",sans-serif;margin:0 0 12px}
-label{display:block;font-size:13px;color:var(--muted);margin-bottom:10px}
-label input,label select,label textarea{display:block;width:100%;margin-top:3px;color:var(--ink)}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fn{margin:-2px 0 12px;font-size:14px}
-.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
-@media (max-width:520px){.two{grid-template-columns:1fr}}
-#auth{max-width:380px;margin:40px auto;padding:0 20px}.hide{display:none!important}.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.top button{background:transparent;color:var(--head-ink);border-color:rgba(255,255,255,.4)}.msg{color:var(--danger);font-size:14px;min-height:20px}
-
-:root{--warn-bg:#fdf0d2;--warn-ink:#7a4d00;--ok-bg:#dff3e4;--ok-ink:#17602e}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--warn-bg:#3a2f12;--warn-ink:#f3c768;--ok-bg:#12331e;--ok-ink:#7fd99a}}
-.brand{font:600 15px Barlow,sans-serif;opacity:.8;margin:0 0 2px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
-.kpi{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:12px 14px}
-.kpi b{display:block;font:700 34px/1.1 "Barlow Condensed",sans-serif}
-.kpi span{color:var(--muted);font-size:14px}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-@media (max-width:760px){.cols{grid-template-columns:1fr}}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:14px 16px}
-.panel h3{font:700 20px "Barlow Condensed",sans-serif;margin:0 0 8px}
-.li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
-.li:last-child{border-bottom:0}
-.bar2{display:grid;grid-template-columns:minmax(120px,200px) 1fr 70px;gap:10px;align-items:center;padding:5px 0}
-.track{background:var(--bg);border-radius:3px;height:14px;overflow:hidden;display:flex}
-.fill{background:var(--blue);height:100%}.fill.a{background:#d99a1c}
-.badge{display:inline-block;font:600 12px Barlow,sans-serif;padding:1px 8px;border-radius:3px;margin:0 4px 2px 0}
-.badge.abs{background:var(--warn-bg);color:var(--warn-ink)}.badge.on{background:var(--ok-bg);color:var(--ok-ink)}
-.mini{padding:4px 10px;font-size:13px}
-.hint{font-size:13px;color:var(--muted)}
-h2.sec{font:700 22px "Barlow Condensed",sans-serif;margin:20px 0 8px}
-
+header{background:linear-gradient(135deg,#0b1430,#1b3a8c 70%,#2447a8);color:#fff;padding:26px 20px 24px;border-bottom:4px solid var(--gold)}
+.wrap{max-width:1040px;margin:0 auto}.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.brandrow{display:flex;gap:14px;align-items:center}.logo{width:52px;height:52px;flex:none;filter:drop-shadow(0 3px 8px rgba(0,0,0,.4))}
+.brand{font:600 14px Barlow,sans-serif;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin:0}
+h1{font:700 36px/1.05 "Barlow Condensed",Impact,sans-serif;margin:2px 0 0;letter-spacing:.5px}header p{margin:4px 0 0;opacity:.85}
+.top button{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.35)}.me{margin-top:14px;font-size:14px;display:inline-block;background:rgba(255,255,255,.12);padding:4px 12px;border-radius:999px}.me:empty{display:none}
+main{max-width:1040px;margin:0 auto;padding:20px 20px 70px}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0;transition:border .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue2);box-shadow:0 0 0 3px rgba(59,109,240,.2)}
+button{font:600 15px Barlow,sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 16px;border-radius:10px;cursor:pointer;box-shadow:0 1px 2px rgba(18,32,63,.08);transition:transform .12s,box-shadow .12s,filter .12s}
+button:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(18,32,63,.16)}button:active{transform:none;filter:brightness(.95)}
+button.primary{background:linear-gradient(180deg,var(--blue2),var(--blue));color:#fff;border-color:var(--blue)}
+button.danger{color:var(--danger);border-color:rgba(192,53,43,.45)}button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+:focus-visible{outline:3px solid var(--blue2);outline-offset:2px}
+.mini{padding:5px 11px;font-size:13px;border-radius:8px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.in{width:90px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.bar input{flex:1 1 220px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tabs button{border-radius:999px;padding:8px 18px}.tabs button.on{background:linear-gradient(180deg,var(--blue2),var(--blue));color:#fff;border-color:var(--blue);box-shadow:0 4px 12px rgba(36,71,168,.35)}
+.card,.panel,.kpi{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh)}.card{padding:18px;margin-bottom:14px}.panel{padding:16px 18px;margin-bottom:14px}
+.card .ct,.panel h3{font:700 21px "Barlow Condensed",sans-serif;margin:0 0 10px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:18px}
+.kpi{padding:14px 16px;border-top:4px solid var(--blue2);transition:transform .15s}.kpi:hover{transform:translateY(-2px)}.kpi b{display:block;font:700 38px/1.1 "Barlow Condensed",sans-serif}.kpi span{color:var(--muted);font-size:14px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media (max-width:760px){.cols{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
+.li{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}.li:last-child{border-bottom:0}
+.bar2{display:grid;grid-template-columns:minmax(120px,210px) 1fr 70px;gap:10px;align-items:center;padding:5px 0}.track{background:var(--bg);border-radius:99px;height:12px;overflow:hidden;display:flex}.fill{background:linear-gradient(90deg,var(--blue2),var(--blue));height:100%}.fill.a{background:#e0a21c}
+section.grp{margin-bottom:24px}.grp h2,h2.sec{font:700 24px "Barlow Condensed",sans-serif;margin:0 0 10px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;padding-left:12px;border-left:5px solid var(--gold)}h2.sec{margin-top:22px}
+.tag{font:600 12px Barlow,sans-serif;background:var(--blue);color:#fff;padding:2px 10px;border-radius:99px}.count{color:var(--muted);font:500 14px Barlow,sans-serif}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh)}table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}th{font-weight:600;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.6px;background:rgba(93,107,138,.07)}tbody tr:hover{background:rgba(59,109,240,.06)}tr:last-child td{border-bottom:0}
+.st{font-size:13px;color:var(--muted)}.hint{font-size:13px;color:var(--muted)}.on{color:var(--blue);font-weight:600}
+.who{display:flex;gap:10px;align-items:center}.av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue2),#0b1430);color:#fff;display:grid;place-items:center;font:700 14px Barlow,sans-serif;flex:none}
+.chip{display:inline-block;font:600 12px Barlow,sans-serif;padding:2px 11px;border-radius:99px;background:#e3e9f7;color:#2a3a66}.s-actief{background:var(--ok-bg);color:var(--ok-ink)}.s-opproef{background:var(--warn-bg);color:var(--warn-ink)}.s-geschorst,.s-ontslagen{background:#fde2e0;color:#8f1d15}.s-inactief,.s-gepensioneerd{background:#e5e7ee;color:#4a5068}
+.badge{display:inline-block;font:600 12px Barlow,sans-serif;padding:1px 10px;border-radius:99px;margin:3px 4px 0 0}.badge.abs{background:var(--warn-bg);color:var(--warn-ink)}.badge.on{background:var(--ok-bg);color:var(--ok-ink)}
+.empty{padding:40px 16px;text-align:center;color:var(--muted);background:var(--surface);border:2px dashed var(--line);border-radius:16px}
+#clock{width:100%;font-size:22px;padding:18px;border-radius:14px;margin-top:6px}.big{font:700 40px "Barlow Condensed",sans-serif}
+label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px}label input,label select,label textarea{display:block;width:100%;margin-top:4px;font-weight:400}
+.chk{display:inline-flex;gap:6px;align-items:center;margin:0 14px 8px 0;font-size:14px;font-weight:500;color:var(--ink)}.chk input{width:auto;margin:0}
+dialog{border:0;border-radius:18px;background:var(--surface);color:var(--ink);padding:22px;width:min(500px,94vw);box-shadow:0 20px 60px rgba(0,0,0,.35)}dialog::backdrop{background:rgba(5,10,25,.6);backdrop-filter:blur(3px)}
+dialog h3{font:700 26px "Barlow Condensed",sans-serif;margin:0 0 12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fn{margin:-2px 0 12px;font-size:14px}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+#auth{max-width:400px;margin:44px auto;padding:0 20px}#auth .card{padding:26px;border-top:5px solid var(--gold)}#auth button{flex:1}.msg{color:var(--danger);font-size:14px;min-height:20px;font-weight:600}.hide{display:none!important}
+#toasts{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);display:grid;gap:8px;z-index:99;width:min(440px,92vw)}.toast{padding:12px 16px;border-radius:12px;color:#fff;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);animation:tin .25s}.toast.ok{background:#1b7a43}.toast.err{background:var(--danger)}@keyframes tin{from{opacity:0;transform:translateY(10px)}}
+.note{font-size:13px;color:var(--muted);margin-top:18px}
 </style>
 </head>
 <body>
 <header><div class="wrap">
-<div class="top"><div><p class="brand">Timeless Roleplay</p><h1>Politiekorps Timeless</h1><p>Medewerkers, afwezigheid, inklokken en uren</p></div><button id="logout" class="hide">Uitloggen</button></div>
+<div class="top"><div class="brandrow"><svg class="logo" viewBox="0 0 24 24"><path fill="#f2b705" d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z"/><path fill="#0b1430" d="m12 6.2 1.6 3.3 3.6.5-2.6 2.5.6 3.6-3.2-1.7-3.2 1.7.6-3.6-2.6-2.5 3.6-.5z"/></svg><div><p class="brand">Timeless Roleplay</p><h1>Politiekorps Timeless</h1><p>Medewerkers, afwezigheid, inklokken en uren</p></div></div><button id="logout" class="hide">Uitloggen</button></div>
 <div class="me" id="me"></div>
 </div></header>
 
@@ -155,7 +135,10 @@ window.CONFIG = {
 <script>
 window.addEventListener("error",e=>{const m=document.getElementById("aMsg");if(m&&!m.textContent)m.textContent="Fout in de pagina: "+(e.message||"onbekend")});
 /* Timeless Roleplay - Politiekorps Timeless (Supabase). Rechten worden afgedwongen in de database (supabase/schema.sql). */
-const SPECS={"Korpsleiding":"Leiding","Noodhulp / Surveillance":"Uitvoerend","Recherche":"Onderzoek","Verkeerspolitie":"Uitvoerend","Arrestatieteam (AT)":"Specialistisch","Dienst Speciale Interventies":"Specialistisch","Hondenbrigade":"Specialistisch","Luchtsteun / Helikopter":"Specialistisch","Opleidingen":"Opleiding","Intern Onderzoek":"Toezicht"};
+const DEF_SPECS={"Korpsleiding":"Leiding","Noodhulp / Surveillance":"Uitvoerend","Recherche":"Onderzoek","Verkeerspolitie":"Uitvoerend","Arrestatieteam (AT)":"Specialistisch","Dienst Speciale Interventies":"Specialistisch","Hondenbrigade":"Specialistisch","Luchtsteun / Helikopter":"Specialistisch","Opleidingen":"Opleiding","Intern Onderzoek":"Toezicht"};let SPECS={...DEF_SPECS};
+const sType=n=>SPECS[n]||"Overig";
+const specNames=()=>[...new Set([...Object.keys(SPECS),...S.people.map(p=>p.specialisatie).filter(Boolean)])];
+const ini=n=>String(n||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
 const RANGEN=["Korpschef","Onderkorpschef","Commissaris","Hoofdinspecteur","Inspecteur","Brigadier","Hoofdagent","Agent","Aspirant","Stagiair"];
 const STATUS=["Actief","Op proef","Inactief","Geschorst","Ontslagen","Gepensioneerd"];
 const REDENEN=["Vakantie","School of werk","Persoonlijk","Overig"];
@@ -290,6 +273,7 @@ async function load(){
       sb.from("uren_correcties").select("*").limit(5000),
       sb.from("afwezigheid").select("*").order("van",{ascending:false}).limit(1000)]);
     S.profile=p.data;S.rights=r.data||{};S.people=m.data||[];S.diensten=d.data||[];S.corr=c.data||[];S.afw=a.data||[];
+    const sp=await sb.from("specialisaties").select("*").order("naam");S.specErr=!!sp.error;S.specRows=sp.data||[];SPECS=S.specRows.length?Object.fromEntries(S.specRows.map(x=>[x.naam,x.type])):{...DEF_SPECS};
     S.nu=[];
     if(!pureClock()){const n=await sb.rpc("nu_ingeklokt");S.nu=n.data||[]}
     if(isAdmin()){
@@ -299,36 +283,38 @@ async function load(){
     showAuth(false);render();
   }finally{loading=false}
 }
-async function run(res){const{error}=await res;if(error){alert(error.message);return false}await load();return true}
+async function run(res,ok){const{error}=await res;if(error){toast(error.message,"err");return false}await load();toast(ok||"Gelukt");return true}
 
 /* ---------- tabs ---------- */
 function tabsList(){
   const t=[];
-  if(can("inklokken"))t.push(["tijd","Mijn tijd"]);
-  if(!pureClock()){t.push(["dash","Overzicht"],["med","Medewerkers"],["afw","Afwezigheid"])}
-  if(can("uren")||can("reset"))t.push(["uren","Uren"]);
-  if(isAdmin())t.push(["rechten","Rechten"]);
+  if(can("inklokken"))t.push(["tijd","⏱ Mijn tijd"]);
+  if(!pureClock()){t.push(["dash","📊 Overzicht"],["med","👮 Medewerkers"],["afw","🏖 Afwezigheid"])}
+  if(can("uren")||can("reset"))t.push(["uren","🕒 Uren"]);
+  if(can("toevoegen"))t.push(["specs","🏷 Specialisaties"]);
+  if(isAdmin())t.push(["rechten","🔑 Rechten"]);
   return t;
 }
 function render(){
+  fill($("spec"),specNames());
   if(!S.profile){
     $("tabs").innerHTML="";$("me").textContent="";
     $("view").innerHTML='<div class="empty"><b>Je account is aangemaakt, maar je profiel ontbreekt in de database.</b><br>Voer <code>supabase/schema.sql</code> uit in de Supabase SQL Editor en log daarna opnieuw in. Staat het schema er al, voer dan de herstel-SQL uit (zie uitleg).</div>';
     return;
   }
   const tl=tabsList();
-  if(!tl.length)tl.push(["med","Medewerkers"]);
+  if(!tl.length)tl.push(["med","👮 Medewerkers"]);
   if(!tl.some(x=>x[0]===tab))tab=tl[0][0];
   $("tabs").innerHTML=tl.length>1?tl.map(x=>`<button data-tab="${x[0]}" class="${x[0]===tab?"on":""}">${x[1]}</button>`).join(""):"";
   $("me").textContent=`${S.profile.naam}: `+(isAdmin()?"beheerder (alle rechten)":(RIGHTS.filter(r=>can(r[0])).map(r=>r[1]).join(", ")||"alleen bekijken"));
-  ({tijd:vTijd,dash:vDash,med:vMed,afw:vAfw,uren:vUren,rechten:vRechten}[tab])();
+  ({tijd:vTijd,dash:vDash,med:vMed,afw:vAfw,uren:vUren,rechten:vRechten,specs:vSpecs}[tab])();
 }
 
 /* ---------- overzicht ---------- */
 function vDash(){
   const abs=S.people.filter(p=>absNow(p.id)),on=S.people.filter(p=>isOn(p.id));
   const act=S.people.filter(p=>p.status==="Actief"&&!absNow(p.id)).length;
-  const specs=Object.keys(SPECS).map(s=>({s,n:S.people.filter(p=>p.specialisatie===s).length,a:S.people.filter(p=>p.specialisatie===s&&absNow(p.id)).length}));
+  const specs=specNames().map(s=>({s,n:S.people.filter(p=>p.specialisatie===s).length,a:S.people.filter(p=>p.specialisatie===s&&absNow(p.id)).length}));
   const max=Math.max(1,...specs.map(x=>x.n));
   const upcoming=S.afw.filter(a=>a.van>today()).sort((a,b)=>a.van.localeCompare(b.van)).slice(0,5);
   const li=(arr,f)=>arr.length?arr.map(f).join(""):'<div class="hint">Niemand.</div>';
@@ -341,7 +327,7 @@ function vDash(){
   <div class="panel"><h3>Nu ingeklokt</h3>${li(on,p=>`<div class="li"><span><b>${esc(p.naam)}</b> <span class="hint">${esc(p.rang)}</span></span><span class="hint">${esc(p.specialisatie)}</span></div>`)}</div>
   <div class="panel"><h3>Nu afwezig</h3>${li(abs,p=>{const a=absNow(p.id);return `<div class="li"><span><b>${esc(p.naam)}</b> <span class="hint">${esc(a.reden||"")}</span></span><span class="hint">${a.tot?"t/m "+nlDate(a.tot):"tot verder bericht"}</span></div>`})}
   ${upcoming.length?`<h3 style="margin-top:14px">Gepland</h3>`+upcoming.map(a=>`<div class="li"><span>${esc(med(a.medewerker_id)?.naam||"")}</span><span class="hint">vanaf ${nlDate(a.van)}</span></div>`).join(""):""}</div></div>
-  <div class="panel"><h3>Per specialisatie</h3>${specs.map(x=>`<div class="bar2"><span>${esc(x.s)} <span class="tag">${SPECS[x.s]}</span></span><div class="track" title="${x.n} medewerkers, ${x.a} afwezig"><div class="fill" style="width:${(x.n-x.a)/max*100}%"></div><div class="fill a" style="width:${x.a/max*100}%"></div></div><span class="hint">${x.n}${x.a?` (${x.a} afw.)`:""}</span></div>`).join("")}
+  <div class="panel"><h3>Per specialisatie</h3>${specs.map(x=>`<div class="bar2"><span>${esc(x.s)} <span class="tag">${sType(x.s)}</span></span><div class="track" title="${x.n} medewerkers, ${x.a} afwezig"><div class="fill" style="width:${(x.n-x.a)/max*100}%"></div><div class="fill a" style="width:${x.a/max*100}%"></div></div><span class="hint">${x.n}${x.a?` (${x.a} afw.)`:""}</span></div>`).join("")}
   <p class="hint">Blauw is beschikbaar, geel is afwezig.</p></div>`;
 }
 
@@ -364,7 +350,7 @@ function vTijd(){
 /* ---------- medewerkers ---------- */
 function vMed(){
   $("view").innerHTML=`<div class="bar"><input id="q" type="search" value="${esc(q)}" placeholder="Zoek op naam, gebruikersnaam of dienstnummer" aria-label="Zoeken"><select id="fs" aria-label="Filter specialisatie"></select><select id="fst" aria-label="Filter status"></select>${can("toevoegen")?'<button class="primary" id="add">Medewerker toevoegen</button>':""}</div><div id="list"></div>`;
-  fill($("fs"),Object.keys(SPECS),"Alle specialisaties");$("fs").value=fs;
+  fill($("fs"),specNames(),"Alle specialisaties");$("fs").value=fs;
   fill($("fst"),[...STATUS,"Afwezig"],"Alle statussen");$("fst").value=fst;
   $("q").oninput=e=>{q=e.target.value;list()};$("fs").onchange=e=>{fs=e.target.value;list()};$("fst").onchange=e=>{fst=e.target.value;list()};
   if($("add"))$("add").onclick=()=>openDlg();
@@ -376,10 +362,10 @@ function list(){
   if(!S.people.length){$("list").innerHTML='<div class="empty">Nog geen medewerkers.'+(can("toevoegen")?' Kies "Medewerker toevoegen" om te beginnen.':"")+"</div>";return}
   if(!shown.length){$("list").innerHTML='<div class="empty">Geen medewerkers gevonden.</div>';return}
   const rk=r=>RANGEN.indexOf(r),ed=can("toevoegen");
-  $("list").innerHTML=Object.keys(SPECS).filter(s=>shown.some(p=>p.specialisatie===s)).map(s=>{
+  $("list").innerHTML=specNames().filter(s=>shown.some(p=>p.specialisatie===s)).map(s=>{
     const rows=shown.filter(p=>p.specialisatie===s).sort((a,b)=>rk(a.rang)-rk(b.rang)||a.naam.localeCompare(b.naam));
-    return `<section class="grp"><h2>${esc(s)}<span class="tag">${SPECS[s]}</span><span class="count">${rows.length} medewerker${rows.length==1?"":"s"}</span></h2><div class="tablewrap"><table><thead><tr><th>Naam</th><th>Rang</th><th>Dienstnr.</th><th>Gebruikersnaam</th><th>Status</th><th></th></tr></thead><tbody>`+
-    rows.map(p=>`<tr><td><b>${esc(p.naam)}</b>${p.opmerkingen?`<div class="st">${esc(p.opmerkingen)}</div>`:""}</td><td>${esc(p.rang)}</td><td>${esc(p.dienstnummer)}</td><td>${esc(p.gebruikersnaam)}</td><td>${esc(p.status)}<div>${badges(p.id)}</div>${p.in_dienst?`<div class="st">sinds ${nlDate(p.in_dienst)}</div>`:""}</td><td>${ed?`<div class="row"><button class="mini" data-edit="${p.id}">Bewerken</button>${absNow(p.id)?`<button class="mini" data-endabs="${absNow(p.id).id}">Terugmelden</button>`:`<button class="mini" data-abs="${p.id}">Afwezig</button>`}</div>`:""}</td></tr>`).join("")+`</tbody></table></div></section>`}).join("");
+    return `<section class="grp"><h2>${esc(s)}<span class="tag">${sType(s)}</span><span class="count">${rows.length} medewerker${rows.length==1?"":"s"}</span></h2><div class="tablewrap"><table><thead><tr><th>Naam</th><th>Rang</th><th>Dienstnr.</th><th>Gebruikersnaam</th><th>Status</th><th></th></tr></thead><tbody>`+
+    rows.map(p=>`<tr><td><div class="who"><span class="av">${ini(p.naam)}</span><div><b>${esc(p.naam)}</b>${p.opmerkingen?`<div class="st">${esc(p.opmerkingen)}</div>`:""}</div></div></td><td>${esc(p.rang)}</td><td>${esc(p.dienstnummer)}</td><td>${esc(p.gebruikersnaam)}</td><td><span class="chip s-${String(p.status||"").toLowerCase().replace(/\W/g,"")}">${esc(p.status)}</span><div>${badges(p.id)}</div>${p.in_dienst?`<div class="st">sinds ${nlDate(p.in_dienst)}</div>`:""}</td><td>${ed?`<div class="row"><button class="mini" data-edit="${p.id}">Bewerken</button>${absNow(p.id)?`<button class="mini" data-endabs="${absNow(p.id).id}">Terugmelden</button>`:`<button class="mini" data-abs="${p.id}">Afwezig</button>`}</div>`:""}</td></tr>`).join("")+`</tbody></table></div></section>`}).join("");
 }
 
 /* ---------- afwezigheid ---------- */
@@ -401,7 +387,7 @@ $("aCancel").onclick=()=>$("adlg").close();
 $("af").onsubmit=e=>{
   e.preventDefault();
   const van=$("aVan").value,tot=$("aTot").value||null;
-  if(tot&&tot<van)return alert("De einddatum mag niet voor de begindatum liggen.");
+  if(tot&&tot<van)return toast("De einddatum mag niet voor de begindatum liggen.","err");
   const reden=$("aRed").value+($("aTxt").value.trim()?": "+$("aTxt").value.trim():"");
   $("adlg").close();
   run(sb.rpc("zet_afwezig",{p_medewerker:$("aMed").value,p_van:van,p_tot:tot,p_reden:reden}));
@@ -434,6 +420,18 @@ function vRechten(){
   $("q").oninput=e=>{q=e.target.value;vRechten();$("q").focus();$("q").setSelectionRange(q.length,q.length)};
 }
 
+/* ---------- specialisaties ---------- */
+function vSpecs(){
+  const used=n=>S.people.filter(p=>p.specialisatie===n).length,types=["Leiding","Uitvoerend","Onderzoek","Specialistisch","Opleiding","Toezicht"];
+  const rows=S.specRows.map(x=>`<div class="li"><span><b>${esc(x.naam)}</b> <span class="tag">${esc(x.type)}</span> <span class="hint">${used(x.naam)} medewerker${used(x.naam)==1?"":"s"}</span></span><span class="row"><button class="mini" data-sren="${x.id}">✎ Hernoemen</button><button class="mini danger" data-sdel="${x.id}">✕ Verwijderen</button></span></div>`).join("");
+  $("view").innerHTML=S.specErr?'<div class="empty"><b>De tabel voor specialisaties ontbreekt nog.</b><br>Voer <code>specialisaties.sql</code> uit in de Supabase SQL Editor en laad de pagina opnieuw.</div>':`<div class="card"><h3 class="ct">Nieuwe specialisatie</h3><form id="sf" class="row"><input id="sNaam" required placeholder="Naam, bijv. Marechaussee" maxlength="60"><input id="sType" list="stypes" placeholder="Functietype" value="Specialistisch" maxlength="30"><datalist id="stypes">${types.map(t=>`<option>${t}</option>`).join("")}</datalist><button class="primary" type="submit">＋ Toevoegen</button></form></div><div class="panel"><h3>Alle specialisaties (${S.specRows.length})</h3>${rows||'<div class="hint">Nog geen.</div>'}</div>`;
+  if($("sf"))$("sf").onsubmit=e=>{e.preventDefault();const naam=$("sNaam").value.trim(),type=$("sType").value.trim()||"Overig";if(S.specRows.some(x=>x.naam.toLowerCase()===naam.toLowerCase()))return toast("Deze specialisatie bestaat al.","err");run(sb.from("specialisaties").insert({naam,type}),"Specialisatie toegevoegd")};
+  $("view").onclick=e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset,x=S.specRows.find(r=>String(r.id)===(d.sren||d.sdel));if(!x)return;
+    if(d.sren){const n=(prompt("Nieuwe naam voor "+x.naam,x.naam)||"").trim();if(!n||n===x.naam)return;(async()=>{const r=await sb.from("specialisaties").update({naam:n}).eq("id",x.id);if(r.error)return toast(r.error.message,"err");await sb.from("medewerkers").update({specialisatie:n}).eq("specialisatie",x.naam);await load();toast("Hernoemd")})()}
+    else{const n=used(x.naam);if(n)return toast(`Er hangen nog ${n} medewerker(s) aan "${x.naam}". Verplaats die eerst.`,"err");if(confirm('Specialisatie "'+x.naam+'" verwijderen?'))run(sb.from("specialisaties").delete().eq("id",x.id),"Verwijderd")}};
+}
+function toast(m,t){const e=document.createElement("div");e.className="toast "+(t||"ok");e.textContent=m;$("toasts").appendChild(e);setTimeout(()=>e.remove(),3800)}
+
 /* ---------- acties ---------- */
 document.addEventListener("click",e=>{
   const t=e.target.closest("button");if(!t)return;
@@ -444,7 +442,7 @@ document.addEventListener("click",e=>{
   else if(d.endabs){if(confirm("Afwezigheid beëindigen?"))run(sb.rpc("beeindig_afwezigheid",{p_id:Number(d.endabs)}))}
   else if(d.adj){
     const id=d.id,h=parseFloat(document.querySelector(`[data-h="${id}"]`).value);
-    if(!(h>0))return alert("Vul een aantal uren groter dan 0 in.");
+    if(!(h>0))return toast("Vul een aantal uren groter dan 0 in.","err");
     run(sb.rpc("pas_uren_aan",{p_medewerker:id,p_minuten:Math.round(h*60)*(d.adj==="min"?-1:1),p_reden:null}));
   }
 });
@@ -460,10 +458,10 @@ function openDlg(p){
   editId=p?p.id:null;$("dt").textContent=p?"Medewerker bewerken":"Medewerker toevoegen";
   $("naam").value=p?.naam||"";$("user").value=p?.gebruikersnaam||"";$("nr").value=p?.dienstnummer||"";
   $("rang").value=p?.rang||"Agent";$("status").value=p?.status||"Actief";
-  $("spec").value=p?.specialisatie||Object.keys(SPECS)[1];$("since").value=p?.in_dienst||"";$("note").value=p?.opmerkingen||"";
+  $("spec").value=p?.specialisatie||specNames()[1];$("since").value=p?.in_dienst||"";$("note").value=p?.opmerkingen||"";
   $("del").hidden=!p;ft();$("dlg").showModal();
 }
-const ft=()=>{$("ft").textContent=SPECS[$("spec").value]};
+const ft=()=>{$("ft").textContent=sType($("spec").value)};
 $("spec").onchange=ft;$("cancel").onclick=()=>$("dlg").close();
 $("f").onsubmit=e=>{
   e.preventDefault();
@@ -481,5 +479,6 @@ setInterval(()=>{if(S.user&&!document.querySelector("dialog[open]")&&!document.a
 sb.auth.getSession().then(({data})=>{if(!data.session)showAuth(true)});
 
 </script>
+<div id="toasts"></div>
 </body>
 </html>
