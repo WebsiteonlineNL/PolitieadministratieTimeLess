@@ -48,6 +48,7 @@ dialog{border:1px solid var(--line);border-radius:6px;background:var(--surface);
 dialog h3{font:700 22px "Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.6px;margin:0 0 12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fn{margin:-2px 0 12px;font-size:14px}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
 #auth{max-width:400px;margin:48px auto;padding:0 20px}#auth .card{padding:24px;border-top:3px solid var(--navy)}#auth button{flex:1}.msg{color:var(--danger);font-size:14px;min-height:20px;font-weight:600}.hide{display:none!important}
 #toasts{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);display:grid;gap:8px;z-index:99;width:min(440px,92vw)}.toast{padding:11px 14px;border-radius:4px;color:#fff;font-weight:600;background:#2b3245}.toast.err{background:var(--danger)}
+.specs{border:1px solid var(--line);border-radius:4px;padding:6px 12px;margin:0 0 12px}.specs legend{font-size:13px;font-weight:600;color:var(--muted);padding:0 6px}.specs .chk{margin:4px 14px 4px 0}
 .note{font-size:13px;color:var(--muted);margin-top:18px}
 </style>
 </head>
@@ -87,8 +88,7 @@ dialog h3{font:700 22px "Barlow Condensed",sans-serif;text-transform:uppercase;l
 <label>Rang<select id="rang"></select></label>
 <label>Status<select id="status"></select></label>
 </div>
-<label>Specialisatie<select id="spec"></select></label>
-<div class="fn">Functietype: <b id="ft"></b></div>
+<fieldset class="specs"><legend>Specialisaties (meerdere mogelijk)</legend><div id="specBox"></div></fieldset>
 <label>In dienst sinds<input id="since" type="date"></label>
 <label>Opmerkingen<textarea id="note" rows="2"></textarea></label>
 <div class="actions">
@@ -134,10 +134,13 @@ window.CONFIG = {
 window.addEventListener("error",e=>{const m=document.getElementById("aMsg");if(m&&!m.textContent)m.textContent="Fout in de pagina: "+(e.message||"onbekend")});
 /* Timeless Roleplay - Politiekorps Timeless (Supabase). Rechten worden afgedwongen in de database (supabase/schema.sql). */
 const DEF_SPECS={"Korpsleiding":"Leiding","Noodhulp / Surveillance":"Uitvoerend","Recherche":"Onderzoek","Verkeerspolitie":"Uitvoerend","Arrestatieteam (AT)":"Specialistisch","Dienst Speciale Interventies":"Specialistisch","Hondenbrigade":"Specialistisch","Luchtsteun / Helikopter":"Specialistisch","Opleidingen":"Opleiding","Intern Onderzoek":"Toezicht"};let SPECS={...DEF_SPECS};
+const pSpecs=p=>p.specialisaties&&p.specialisaties.length?p.specialisaties:(p.specialisatie?[p.specialisatie]:[]);
+const hasSpec=(p,n)=>pSpecs(p).includes(n);
 const sType=n=>SPECS[n]||"Overig";
-const specNames=()=>[...new Set([...Object.keys(SPECS),...S.people.map(p=>p.specialisatie).filter(Boolean)])];
+const specNames=()=>[...new Set([...Object.keys(SPECS),...S.people.flatMap(pSpecs)])];
 const ini=n=>String(n||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
-const RANGEN=["Korpschef","Onderkorpschef","Commissaris","Hoofdinspecteur","Inspecteur","Brigadier","Hoofdagent","Agent","Aspirant","Stagiair"];
+const RANGMAP={"Korpschef":"E.H. Commissaris","Onderkorpschef":"H. Commissaris"};
+const RANGEN=["E.H. Commissaris","H. Commissaris","Commissaris","Hoofdinspecteur","Inspecteur","Brigadier","Hoofdagent","Agent","Aspirant","Stagiair"];
 const STATUS=["Actief","Op proef","Inactief","Geschorst","Ontslagen","Gepensioneerd"];
 const REDENEN=["Vakantie","School of werk","Persoonlijk","Overig"];
 const RIGHTS=[["toevoegen","Medewerkers toevoegen en afwezig zetten"],["inklokken","Inklokken"],["uren","Uren plussen/minnen"],["reset","Tijden resetten"]];
@@ -145,7 +148,7 @@ const RIGHTS=[["toevoegen","Medewerkers toevoegen en afwezig zetten"],["inklokke
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fill=(sel,arr,first)=>{sel.innerHTML=(first?`<option value="">${first}</option>`:"")+arr.map(a=>`<option>${a}</option>`).join("")};
-fill($("rang"),RANGEN);fill($("status"),STATUS);fill($("spec"),Object.keys(SPECS));fill($("aRed"),REDENEN);
+fill($("rang"),RANGEN);fill($("status"),STATUS);fill($("aRed"),REDENEN);
 
 if(!window.CONFIG||CONFIG.SUPABASE_URL.includes("JOUW-PROJECT")){
   $("aMsg").textContent="De Supabase-URL is nog niet ingevuld. Zet bovenin dit bestand bij SUPABASE_URL de Project URL van je eigen project (https://JOUWCODE.supabase.co).";
@@ -271,6 +274,7 @@ async function load(){
       sb.from("uren_correcties").select("*").limit(5000),
       sb.from("afwezigheid").select("*").order("van",{ascending:false}).limit(1000)]);
     S.profile=p.data;S.rights=r.data||{};S.people=m.data||[];S.diensten=d.data||[];S.corr=c.data||[];S.afw=a.data||[];
+    S.people.forEach(p=>{p.rang=RANGMAP[p.rang]||p.rang});
     const sp=await sb.from("specialisaties").select("*").order("naam");S.specErr=!!sp.error;S.specRows=sp.data||[];SPECS=S.specRows.length?Object.fromEntries(S.specRows.map(x=>[x.naam,x.type])):{...DEF_SPECS};
     S.nu=[];
     if(!pureClock()){const n=await sb.rpc("nu_ingeklokt");S.nu=n.data||[]}
@@ -294,7 +298,6 @@ function tabsList(){
   return t;
 }
 function render(){
-  fill($("spec"),specNames());
   if(!S.profile){
     $("tabs").innerHTML="";$("me").textContent="";
     $("view").innerHTML='<div class="empty"><b>Je account is aangemaakt, maar je profiel ontbreekt in de database.</b><br>Voer <code>supabase/schema.sql</code> uit in de Supabase SQL Editor en log daarna opnieuw in. Staat het schema er al, voer dan de herstel-SQL uit (zie uitleg).</div>';
@@ -312,7 +315,7 @@ function render(){
 function vDash(){
   const abs=S.people.filter(p=>absNow(p.id)),on=S.people.filter(p=>isOn(p.id));
   const act=S.people.filter(p=>p.status==="Actief"&&!absNow(p.id)).length;
-  const specs=specNames().map(s=>({s,n:S.people.filter(p=>p.specialisatie===s).length,a:S.people.filter(p=>p.specialisatie===s&&absNow(p.id)).length}));
+  const specs=specNames().map(s=>({s,n:S.people.filter(p=>hasSpec(p,s)).length,a:S.people.filter(p=>hasSpec(p,s)&&absNow(p.id)).length}));
   const max=Math.max(1,...specs.map(x=>x.n));
   const upcoming=S.afw.filter(a=>a.van>today()).sort((a,b)=>a.van.localeCompare(b.van)).slice(0,5);
   const li=(arr,f)=>arr.length?arr.map(f).join(""):'<div class="hint">Niemand.</div>';
@@ -322,7 +325,7 @@ function vDash(){
   <div class="kpi"><b>${abs.length}</b><span>Nu afwezig</span></div>
   <div class="kpi"><b>${on.length}</b><span>Nu ingeklokt</span></div></div>
   <div class="cols">
-  <div class="panel"><h3>Nu ingeklokt</h3>${li(on,p=>`<div class="li"><span><b>${esc(p.naam)}</b> <span class="hint">${esc(p.rang)}</span></span><span class="hint">${esc(p.specialisatie)}</span></div>`)}</div>
+  <div class="panel"><h3>Nu ingeklokt</h3>${li(on,p=>`<div class="li"><span><b>${esc(p.naam)}</b> <span class="hint">${esc(p.rang)}</span></span><span class="hint">${esc(pSpecs(p).join(", "))}</span></div>`)}</div>
   <div class="panel"><h3>Nu afwezig</h3>${li(abs,p=>{const a=absNow(p.id);return `<div class="li"><span><b>${esc(p.naam)}</b> <span class="hint">${esc(a.reden||"")}</span></span><span class="hint">${a.tot?"t/m "+nlDate(a.tot):"tot verder bericht"}</span></div>`})}
   ${upcoming.length?`<h3 style="margin-top:14px">Gepland</h3>`+upcoming.map(a=>`<div class="li"><span>${esc(med(a.medewerker_id)?.naam||"")}</span><span class="hint">vanaf ${nlDate(a.van)}</span></div>`).join(""):""}</div></div>
   <div class="panel"><h3>Per specialisatie</h3>${specs.map(x=>`<div class="bar2"><span>${esc(x.s)} <span class="tag">${sType(x.s)}</span></span><div class="track" title="${x.n} medewerkers, ${x.a} afwezig"><div class="fill" style="width:${(x.n-x.a)/max*100}%"></div><div class="fill a" style="width:${x.a/max*100}%"></div></div><span class="hint">${x.n}${x.a?` (${x.a} afw.)`:""}</span></div>`).join("")}
@@ -335,7 +338,7 @@ function vTijd(){
   if(!p){$("view").innerHTML='<div class="empty">Je account is nog niet aan een medewerker gekoppeld. Vraag de beheerder om dit bij Rechten in te stellen.</div>';return}
   const t=T(mid),ing=!!t.open,a=absNow(mid);
   const last=t.done.slice(0,10).map(d=>`<tr><td>${new Date(d.ingeklokt).toLocaleString("nl-NL")}</td><td>${hm(d.uitgeklokt)}</td><td>${fmt(Math.round((new Date(d.uitgeklokt)-new Date(d.ingeklokt))/6e4))}</td></tr>`).join("");
-  $("view").innerHTML=`<div class="card"><div>${esc(p.naam)} (${esc(p.rang)}, ${esc(p.specialisatie)})</div>
+  $("view").innerHTML=`<div class="card"><div>${esc(p.naam)} (${esc(p.rang)}, ${esc(pSpecs(p).join(", "))})</div>
   <div class="cards" style="margin:10px 0"><div class="kpi"><b>${fmt(worked(mid,startDay()))}</b><span>Vandaag</span></div><div class="kpi"><b>${fmt(worked(mid,startWeek()))}</b><span>Deze week</span></div><div class="kpi"><b>${fmt(mins(mid))}</b><span>Totaal${t.adj?` (incl. correctie ${fmt(t.adj)})`:""}</span></div></div>
   <p class="${ing?"on":"st"}">${ing?"Ingeklokt sinds "+hm(t.open):"Niet ingeklokt"}</p>
   ${a?`<p><span class="badge abs">Afwezig${a.tot?" t/m "+nlDate(a.tot):""}</span> Tijdens afwezigheid kun je niet inklokken.</p>`:""}
@@ -356,14 +359,13 @@ function vMed(){
 }
 function list(){
   const k=q.trim().toLowerCase();
-  const shown=S.people.filter(p=>(!fs||p.specialisatie===fs)&&(!fst||(fst==="Afwezig"?!!absNow(p.id):p.status===fst))&&(!k||[p.naam,p.gebruikersnaam,p.dienstnummer].join(" ").toLowerCase().includes(k)));
+  const shown=S.people.filter(p=>(!fs||hasSpec(p,fs))&&(!fst||(fst==="Afwezig"?!!absNow(p.id):p.status===fst))&&(!k||[p.naam,p.gebruikersnaam,p.dienstnummer].join(" ").toLowerCase().includes(k)));
   if(!S.people.length){$("list").innerHTML='<div class="empty">Nog geen medewerkers.'+(can("toevoegen")?' Kies "Medewerker toevoegen" om te beginnen.':"")+"</div>";return}
   if(!shown.length){$("list").innerHTML='<div class="empty">Geen medewerkers gevonden.</div>';return}
   const rk=r=>RANGEN.indexOf(r),ed=can("toevoegen");
-  $("list").innerHTML=specNames().filter(s=>shown.some(p=>p.specialisatie===s)).map(s=>{
-    const rows=shown.filter(p=>p.specialisatie===s).sort((a,b)=>rk(a.rang)-rk(b.rang)||a.naam.localeCompare(b.naam));
-    return `<section class="grp"><h2>${esc(s)}<span class="tag">${sType(s)}</span><span class="count">${rows.length} medewerker${rows.length==1?"":"s"}</span></h2><div class="tablewrap"><table><thead><tr><th>Naam</th><th>Rang</th><th>Dienstnr.</th><th>Gebruikersnaam</th><th>Status</th><th></th></tr></thead><tbody>`+
-    rows.map(p=>`<tr><td><div class="who"><span class="av">${ini(p.naam)}</span><div><b>${esc(p.naam)}</b>${p.opmerkingen?`<div class="st">${esc(p.opmerkingen)}</div>`:""}</div></div></td><td>${esc(p.rang)}</td><td>${esc(p.dienstnummer)}</td><td>${esc(p.gebruikersnaam)}</td><td><span class="chip s-${String(p.status||"").toLowerCase().replace(/\W/g,"")}">${esc(p.status)}</span><div>${badges(p.id)}</div>${p.in_dienst?`<div class="st">sinds ${nlDate(p.in_dienst)}</div>`:""}</td><td>${ed?`<div class="row"><button class="mini" data-edit="${p.id}">Bewerken</button>${absNow(p.id)?`<button class="mini" data-endabs="${absNow(p.id).id}">Terugmelden</button>`:`<button class="mini" data-abs="${p.id}">Afwezig</button>`}</div>`:""}</td></tr>`).join("")+`</tbody></table></div></section>`}).join("");
+  const rows=[...shown].sort((a,b)=>rk(a.rang)-rk(b.rang)||a.naam.localeCompare(b.naam));
+  $("list").innerHTML=`<div class="count" style="margin-bottom:8px">${rows.length} medewerker${rows.length==1?"":"s"}</div><div class="tablewrap"><table><thead><tr><th>Naam</th><th>Rang</th><th>Dienstnr.</th><th>Specialisaties</th><th>Gebruikersnaam</th><th>Status</th><th></th></tr></thead><tbody>`+
+  rows.map(p=>`<tr><td><div class="who"><span class="av">${ini(p.naam)}</span><div><b>${esc(p.naam)}</b>${p.opmerkingen?`<div class="st">${esc(p.opmerkingen)}</div>`:""}</div></div></td><td>${esc(p.rang)}</td><td>${esc(p.dienstnummer)}</td><td>${pSpecs(p).map(x=>`<span class="tag">${esc(x)}</span>`).join(" ")||'<span class="st">-</span>'}</td><td>${esc(p.gebruikersnaam)}</td><td><span class="chip s-${String(p.status||"").toLowerCase().replace(/\W/g,"")}">${esc(p.status)}</span><div>${badges(p.id)}</div>${p.in_dienst?`<div class="st">sinds ${nlDate(p.in_dienst)}</div>`:""}</td><td>${ed?`<div class="row"><button class="mini" data-edit="${p.id}">Bewerken</button>${absNow(p.id)?`<button class="mini" data-endabs="${absNow(p.id).id}">Terugmelden</button>`:`<button class="mini" data-abs="${p.id}">Afwezig</button>`}</div>`:""}</td></tr>`).join("")+`</tbody></table></div>`;
 }
 
 /* ---------- afwezigheid ---------- */
@@ -401,7 +403,7 @@ function vUren(){
 function exportCsv(){
   const c=v=>`"${String(v??"").replace(/"/g,'""')}"`;
   const lines=[["Naam","Dienstnummer","Rang","Specialisatie","Vandaag (min)","Week (min)","Totaal (min)"].map(c).join(";")];
-  S.people.forEach(p=>lines.push([p.naam,p.dienstnummer,p.rang,p.specialisatie,worked(p.id,startDay()),worked(p.id,startWeek()),mins(p.id)].map(c).join(";")));
+  S.people.forEach(p=>lines.push([p.naam,p.dienstnummer,p.rang,pSpecs(p).join(" / "),worked(p.id,startDay()),worked(p.id,startWeek()),mins(p.id)].map(c).join(";")));
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob(["\ufeff"+lines.join("\n")],{type:"text/csv;charset=utf-8"}));
   a.download=`timeless-uren-${today()}.csv`;a.click();URL.revokeObjectURL(a.href);
@@ -420,12 +422,12 @@ function vRechten(){
 
 /* ---------- specialisaties ---------- */
 function vSpecs(){
-  const used=n=>S.people.filter(p=>p.specialisatie===n).length,types=["Leiding","Uitvoerend","Onderzoek","Specialistisch","Opleiding","Toezicht"];
+  const used=n=>S.people.filter(p=>hasSpec(p,n)).length,types=["Leiding","Uitvoerend","Onderzoek","Specialistisch","Opleiding","Toezicht"];
   const rows=S.specRows.map(x=>`<div class="li"><span><b>${esc(x.naam)}</b> <span class="tag">${esc(x.type)}</span> <span class="hint">${used(x.naam)} medewerker${used(x.naam)==1?"":"s"}</span></span><span class="row"><button class="mini" data-sren="${x.id}">Hernoemen</button><button class="mini danger" data-sdel="${x.id}">Verwijderen</button></span></div>`).join("");
   $("view").innerHTML=S.specErr?'<div class="empty"><b>De tabel voor specialisaties ontbreekt nog.</b><br>Voer <code>specialisaties.sql</code> uit in de Supabase SQL Editor en laad de pagina opnieuw.</div>':`<div class="card"><h3 class="ct">Nieuwe specialisatie</h3><form id="sf" class="row"><input id="sNaam" required placeholder="Naam, bijv. Marechaussee" maxlength="60"><input id="sType" list="stypes" placeholder="Functietype" value="Specialistisch" maxlength="30"><datalist id="stypes">${types.map(t=>`<option>${t}</option>`).join("")}</datalist><button class="primary" type="submit">Toevoegen</button></form></div><div class="panel"><h3>Alle specialisaties (${S.specRows.length})</h3>${rows||'<div class="hint">Nog geen.</div>'}</div>`;
   if($("sf"))$("sf").onsubmit=e=>{e.preventDefault();const naam=$("sNaam").value.trim(),type=$("sType").value.trim()||"Overig";if(S.specRows.some(x=>x.naam.toLowerCase()===naam.toLowerCase()))return toast("Deze specialisatie bestaat al.","err");run(sb.from("specialisaties").insert({naam,type}),"Specialisatie toegevoegd")};
   $("view").onclick=e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset,x=S.specRows.find(r=>String(r.id)===(d.sren||d.sdel));if(!x)return;
-    if(d.sren){const n=(prompt("Nieuwe naam voor "+x.naam,x.naam)||"").trim();if(!n||n===x.naam)return;(async()=>{const r=await sb.from("specialisaties").update({naam:n}).eq("id",x.id);if(r.error)return toast(r.error.message,"err");await sb.from("medewerkers").update({specialisatie:n}).eq("specialisatie",x.naam);await load();toast("Hernoemd")})()}
+    if(d.sren){const n=(prompt("Nieuwe naam voor "+x.naam,x.naam)||"").trim();if(!n||n===x.naam)return;(async()=>{const r=await sb.from("specialisaties").update({naam:n}).eq("id",x.id);if(r.error)return toast(r.error.message,"err");for(const p of S.people.filter(p=>hasSpec(p,x.naam))){const arr=pSpecs(p).map(v=>v===x.naam?n:v);await sb.from("medewerkers").update({specialisaties:arr,specialisatie:arr[0]||null}).eq("id",p.id)}await load();toast("Hernoemd")})()}
     else{const n=used(x.naam);if(n)return toast(`Er hangen nog ${n} medewerker(s) aan "${x.naam}". Verplaats die eerst.`,"err");if(confirm('Specialisatie "'+x.naam+'" verwijderen?'))run(sb.from("specialisaties").delete().eq("id",x.id),"Verwijderd")}};
 }
 function toast(m,t){const e=document.createElement("div");e.className="toast "+(t||"ok");e.textContent=m;$("toasts").appendChild(e);setTimeout(()=>e.remove(),3800)}
@@ -456,14 +458,14 @@ function openDlg(p){
   editId=p?p.id:null;$("dt").textContent=p?"Medewerker bewerken":"Medewerker toevoegen";
   $("naam").value=p?.naam||"";$("user").value=p?.gebruikersnaam||"";$("nr").value=p?.dienstnummer||"";
   $("rang").value=p?.rang||"Agent";$("status").value=p?.status||"Actief";
-  $("spec").value=p?.specialisatie||specNames()[1];$("since").value=p?.in_dienst||"";$("note").value=p?.opmerkingen||"";
-  $("del").hidden=!p;ft();$("dlg").showModal();
+  specBox(p?pSpecs(p):[]);$("since").value=p?.in_dienst||"";$("note").value=p?.opmerkingen||"";
+  $("del").hidden=!p;$("dlg").showModal();
 }
-const ft=()=>{$("ft").textContent=sType($("spec").value)};
-$("spec").onchange=ft;$("cancel").onclick=()=>$("dlg").close();
+const chosen=()=>[...document.querySelectorAll("#specBox input:checked")].map(i=>i.value);
+function specBox(sel){$("specBox").innerHTML=specNames().map(n=>`<label class="chk"><input type="checkbox" value="${esc(n)}" ${sel.includes(n)?"checked":""}>${esc(n)}</label>`).join("")||'<span class="hint">Maak eerst een specialisatie.</span>'}$("cancel").onclick=()=>$("dlg").close();
 $("f").onsubmit=e=>{
   e.preventDefault();
-  const d={naam:$("naam").value.trim(),gebruikersnaam:$("user").value.trim()||null,dienstnummer:$("nr").value.trim()||null,rang:$("rang").value,status:$("status").value,specialisatie:$("spec").value,in_dienst:$("since").value||null,opmerkingen:$("note").value.trim()||null};
+  const d={naam:$("naam").value.trim(),gebruikersnaam:$("user").value.trim()||null,dienstnummer:$("nr").value.trim()||null,rang:$("rang").value,status:$("status").value,specialisaties:chosen(),specialisatie:chosen()[0]||null,in_dienst:$("since").value||null,opmerkingen:$("note").value.trim()||null};
   $("dlg").close();
   run(editId?sb.from("medewerkers").update(d).eq("id",editId):sb.from("medewerkers").insert(d));
 };
