@@ -83,10 +83,11 @@ h2.sec{font:700 22px "Barlow Condensed",sans-serif;margin:20px 0 8px}
 <div class="card">
 <h3 style="font:700 24px 'Barlow Condensed',sans-serif;margin:0 0 10px">Inloggen</h3>
 <form id="authForm">
-<label>Naam<input id="aNaam" required autocomplete="name" placeholder="Jouw naam"></label>
-<p class="hint">Eerste keer? Dan wordt je account automatisch aangemaakt. De beheerder geeft je daarna je rechten.</p>
+<label>Naam<input id="aNaam" required autocomplete="username" placeholder="Jouw naam"></label>
+<label>Wachtwoord (minimaal 6 tekens)<input id="aPass" type="password" required minlength="6" autocomplete="current-password"></label>
 <div class="msg" id="aMsg" role="alert"></div>
-<div class="row"><button class="primary" type="submit">Inloggen</button></div>
+<div class="row"><button class="primary" type="submit">Inloggen</button><button type="button" id="signup">Account maken</button></div>
+<p class="hint">Nog geen account? Vul je naam en een zelfgekozen wachtwoord in en kies Account maken. De beheerder geeft je daarna je rechten.</p>
 </form>
 </div>
 </div>
@@ -237,29 +238,39 @@ const hint=m=>{m=String(m||"");
   if(/invalid login/i.test(m))return " Controleer e-mailadres en wachtwoord, of maak eerst een account.";
   return""};
 function showAuth(on){$("auth").classList.toggle("hide",!on);$("app").classList.toggle("hide",on);$("logout").classList.toggle("hide",on);if(on)$("me").textContent=""}
-/* Inloggen met alleen een naam. Supabase heeft intern een e-mail + wachtwoord nodig;
-   die worden hier automatisch uit de naam gemaakt en zijn onzichtbaar voor de gebruiker. */
-const ADMIN_NAAM="Bjorn";                 /* <- deze naam is de beheerder (zet hier jouw naam) */
+/* Inloggen met naam + wachtwoord. Supabase heeft intern een e-mailadres nodig;
+   dat wordt hier automatisch uit de naam gemaakt en is onzichtbaar voor de gebruiker. */
+const ADMIN_NAAM="Bjorn";                 /* <- deze naam wordt de beheerder (zet hier jouw naam) */
 const ADMIN_MAIL="pottersbjorn@gmail.com"; /* e-mail van de beheerder in Supabase */
 const NAAM_DOMEIN="timelaps-rp.nl";        /* verzonnen domein voor de overige namen (er wordt nooit gemaild) */
 const slug=n=>n.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,".").replace(/^\.+|\.+$/g,"");
-const creds=naam=>{const k=slug(naam);return{email:k===slug(ADMIN_NAAM)?ADMIN_MAIL:k+"@"+NAAM_DOMEIN,password:"TL-"+k+"-roleplay"}};
+const mailVoor=naam=>{const k=slug(naam);return k===slug(ADMIN_NAAM)?ADMIN_MAIL:k+"@"+NAAM_DOMEIN};
 const isNet=m=>/failed to fetch|networkerror|load failed|aborted/i.test(String(m||""));
+function formWaarden(){
+  const naam=$("aNaam").value.trim().replace(/\s+/g," "),password=$("aPass").value,msg=$("aMsg");msg.textContent="";
+  if(!slug(naam)){msg.textContent="Vul je naam in.";return null}
+  if(password.length<6){msg.textContent="Je wachtwoord moet minimaal 6 tekens hebben.";return null}
+  return{naam,password,email:mailVoor(naam)};
+}
+async function netFout(){$("aMsg").textContent="Verbinden...";await checkSupabase(true)}
 $("authForm").onsubmit=async e=>{
-  e.preventDefault();const msg=$("aMsg");msg.textContent="";
-  const naam=$("aNaam").value.trim().replace(/\s+/g," ");
-  if(!slug(naam)){msg.textContent="Vul je naam in.";return}
-  const{email,password}=creds(naam);
-  let r=await sb.auth.signInWithPassword({email,password});
-  if(r.error&&/invalid login/i.test(r.error.message)){
-    r=await sb.auth.signUp({email,password,options:{data:{naam}}});
-    if(!r.error&&!r.data.session){msg.textContent="Account aangemaakt, maar Supabase wil eerst een bevestiging. Zet bij Authentication > Sign In / Providers 'Confirm email' uit en probeer opnieuw.";return}
-    if(r.error&&/already registered/i.test(r.error.message)){msg.textContent="Deze naam bestaat al als oud account met een eigen wachtwoord. Verwijder dat account in Supabase bij Authentication > Users en probeer opnieuw.";return}
+  e.preventDefault();const w=formWaarden();if(!w)return;
+  const{error}=await sb.auth.signInWithPassword({email:w.email,password:w.password});
+  if(!error)return;
+  if(isNet(error.message))return netFout();
+  if(/invalid login/i.test(error.message))$("aMsg").textContent="Naam of wachtwoord klopt niet. Heb je nog geen account? Kies Account maken.";
+  else $("aMsg").textContent="Inloggen is niet gelukt: "+error.message+"."+hint(error.message);
+};
+$("signup").onclick=async()=>{
+  const w=formWaarden();if(!w)return;
+  const{data,error}=await sb.auth.signUp({email:w.email,password:w.password,options:{data:{naam:w.naam}}});
+  if(error){
+    if(isNet(error.message))return netFout();
+    if(/already registered/i.test(error.message))$("aMsg").textContent="Deze naam bestaat al. Log in met je wachtwoord of kies een andere naam.";
+    else $("aMsg").textContent="Account maken is niet gelukt: "+error.message+"."+hint(error.message);
+    return;
   }
-  if(r.error){
-    if(isNet(r.error.message)){msg.textContent="Verbinden...";await checkSupabase(true)}
-    else msg.textContent="Inloggen is niet gelukt: "+r.error.message+"."+hint(r.error.message);
-  }
+  if(!data.session)$("aMsg").textContent="Account gemaakt, maar Supabase wil eerst een bevestiging. Zet bij Authentication > Sign In / Providers 'Confirm email' uit en klik daarna op Inloggen.";
 };
 $("logout").onclick=()=>sb.auth.signOut();
 sb.auth.onAuthStateChange((_ev,session)=>{
